@@ -1,24 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
+
+const GET_PRODUCTS = gql`
+  {
+    products {
+      id name quantity price
+    }
+  }
+`;
 
 function App() {
+  const { loading, data } = useQuery(GET_PRODUCTS)
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      { !loading ? (
+        <div>
+          { data.products.map(product => (
+            <div key={product.id}>
+              { console.log(product)}
+              <p>{product.name}</p>
+            </div>
+            ))
+          }
+        </div>        
+        ) : <p>carregando...</p>
+      }
     </div>
   );
 }

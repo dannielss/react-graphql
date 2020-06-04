@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './index.css'
 import { gql } from 'apollo-boost';
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { useMutation } from '@apollo/react-hooks';
 
 const ADD_PRODUCT = gql`
@@ -13,11 +13,12 @@ const ADD_PRODUCT = gql`
 `;
 
 function ProductNew() {
-  let history = useHistory();
+  const history = useHistory();
+  const { create } = useParams();
   const [name, setName] = useState('')
   const [quantity, setQuantity] = useState('')
   const [price, setPrice] = useState('')
-  const [newProduct] = useMutation(ADD_PRODUCT);
+  const [newProduct, data] = useMutation(ADD_PRODUCT);
 
   function handleSubmit(e) {
     e.preventDefault()

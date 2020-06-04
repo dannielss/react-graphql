@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './index.css'
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
@@ -22,16 +22,10 @@ const DELETE_PRODUCT = gql`
 
 function Products() {
   const [products, setProducts] = useState([])
-  const { loading, data } = useQuery(GET_PRODUCTS)
+  const { loading, data } = useQuery(GET_PRODUCTS, { pollInterval: 500 })
 
   useEffect(() => {
-    if(data) {
-      setProducts(data.products)
-    }
-  }, [])
-
-  useEffect(() => {
-    if(data) {
+    if(data && data.products) {
       setProducts(data.products)
     }
   }, [data])

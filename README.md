@@ -17,5 +17,3 @@
 
 - Apollo-client
 - GraphQL
-
-> Que a força esteja com você :muscle:

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './index.css'
-import { gql } from 'apollo-boost';
 import { useHistory, useParams } from 'react-router-dom'
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation, gql } from '@apollo/client';
 
 const GET_PRODUCT = gql`
   query product($id: Int) {
@@ -15,7 +14,7 @@ const GET_PRODUCT = gql`
 const EDIT_PRODUCT = gql`
   mutation updateProduct($id: Int, $data: ProductInput) {
     updateProduct(id: $id, data: $data) {
-      id name quantity price
+      message
     }
   }
 `;

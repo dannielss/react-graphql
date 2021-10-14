@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import './index.css'
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import { Link } from 'react-router-dom';
 
 const GET_PRODUCTS = gql`
@@ -15,33 +14,27 @@ const GET_PRODUCTS = gql`
 const DELETE_PRODUCT = gql`
   mutation deleteProduct($id: Int) {
     deleteProduct(id: $id) {
-      id name quantity price
+      message
     }
   }
 `
 
 function Products() {
-  const [products, setProducts] = useState([])
-  const { loading, data } = useQuery(GET_PRODUCTS, { pollInterval: 500 })
+  const { loading, data, error, refetch } = useQuery(GET_PRODUCTS, { fetchPolicy: 'network-only'})
 
-  useEffect(() => {
-    if(data && data.products) {
-      setProducts(data.products)
-    }
-  }, [data])
-  
   const [deleteProduct] = useMutation(DELETE_PRODUCT);
 
-  function handleDelete(id) {
-    deleteProduct({ variables: { id }})
-    const response = products.filter(product => product.id !== id)
-    setProducts(response)
+  async function handleDelete(id) {
+    await deleteProduct({ variables: { id }})
+    refetch()
   }
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
 
   return (
     <div className="container">
       <h1>Lista de produtos</h1>
-        {!loading ? (
         <table>
           <thead>
             <tr>
@@ -53,7 +46,7 @@ function Products() {
             </tr>
           </thead>
           <tbody>
-            { products.map(product => 
+            { data.products.map(product => 
               (
                 <tr key={product.id}>
                   <td>{product.id}</td>
@@ -70,7 +63,6 @@ function Products() {
             }
           </tbody>
         </table>
-        ) : <p>carregando</p> }
         <Link to="/new"><button style={{ marginTop: '10px' }}>Cadastrar novo produto</button></Link>
     </div>
   );
